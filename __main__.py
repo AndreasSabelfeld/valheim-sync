@@ -3,16 +3,14 @@ import os
 from dotenv import load_dotenv, dotenv_values
 from tkinter import messagebox
 from win10toast import ToastNotifier
+from time import sleep
 
 from src.dbox_handler import DBoxHandler
 from src.valheim_detector import ValheimDetector
 
 
 def main():
-    choice = messagebox.askyesno("Valheim-Sync", "Start the program?")
-    if not choice:
-        return
-
+    print("running...")
     # loading variables from .env file
     load_dotenv()
     WORLD_NAME = os.getenv("WORLD_NAME")
@@ -32,6 +30,7 @@ def main():
         if valheim.files_changed():
             dropbox.upload_save_files(valheim.path, WORLD_NAME)
 
+        sleep(1)
 
 if __name__ == "__main__":
     main()
