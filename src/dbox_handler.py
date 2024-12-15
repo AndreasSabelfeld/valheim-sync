@@ -49,7 +49,16 @@ class DBoxHandler:
             self.toaster.show_toast("files downloaded!", " ", icon_path="valheim_sync.ico")
             return True
 
-        except dropbox.exceptions.ApiError:
-            self.toaster.show_toast("Error:", "No such file in Dropbox directory.", icon_path="valheim_sync.ico")
-            self.upload_save_files(local_path, world_name)
+        except (dropbox.exceptions.ApiError, FileNotFoundError) as e:
+            if e == dropbox.exceptions.ApiError:
+                self.toaster.show_toast("Error:", "No such file in Dropbox directory.", icon_path="valheim_sync.ico")
+                self.upload_save_files(local_path, world_name)
+                if os.path.exists("tmp.db"):
+                    os.remove("tmp.db")
+                if os.path.exists("tmp.fwl"):
+                    os.remove("tmp.fwl")
+            else:
+                self.toaster.show_toast("Error:", "'worlds_local' folder does not exist, "
+                                                  "please move your world to the local save via the settings",
+                                        icon_path="valheim_sync.ico")
             return False
