@@ -21,6 +21,7 @@ def main():
     dropbox = DBoxHandler(os.getenv("APP_KEY"), os.getenv("APP_SECRET"), os.getenv("REFRESH_TOKEN"), toaster)
     valheim = ValheimDetector(WORLD_NAME, dropbox, toaster)
     running = True
+    sleep_duration = 1
 
     while running:
         if valheim.game_started():
@@ -30,7 +31,7 @@ def main():
         if valheim.files_changed():
             dropbox.upload_save_files(valheim.path, WORLD_NAME)
 
-        sleep(1)
+        sleep(sleep_duration)
 
 if __name__ == "__main__":
     main()

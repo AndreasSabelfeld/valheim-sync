@@ -1,1 +1,6 @@
 .env
+build
+dist
+valheim-sync.exe
+valheim-sync.spec
+tmp.db

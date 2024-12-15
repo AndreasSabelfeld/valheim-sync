@@ -32,8 +32,8 @@ class ValheimDetector:
                 self.prev_hex.fwl = hashlib.md5(f.read()).hexdigest()
                 f.close()
         except FileNotFoundError:
-            self.dbox.download_save_files(self.path, self.world_name)
-            self.initial_read()
+            if self.dbox.download_save_files(self.path, self.world_name):
+                self.initial_read()
 
     def game_started(self) -> bool:
         """

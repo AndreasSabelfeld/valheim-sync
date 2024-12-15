@@ -15,16 +15,26 @@ class DBoxHandler:
 
         :return: None
         """
+        try:
+            with open(f"{local_path}\\{world_name}.db", 'rb') as f:
+                self.dbx.files_upload(f.read(), f"/{world_name}.db", mode=dropbox.files.WriteMode.overwrite)
+                f.close()
+            with open(f"{local_path}\\{world_name}.fwl", 'rb') as f:
+                self.dbx.files_upload(f.read(), f"/{world_name}.fwl", mode=dropbox.files.WriteMode.overwrite)
+                f.close()
+            self.toaster.show_toast("files uploaded!", " ", icon_path="valheim_sync.ico")
+        except FileNotFoundError:
+            self.toaster.show_toast("Error:", "No such file in Local directory.", icon_path="valheim_sync.ico")
+            pass
 
-        with open(f"{local_path}\\{world_name}.db", 'rb') as f:
-            self.dbx.files_upload(f.read(), f"/{world_name}.db", mode=dropbox.files.WriteMode.overwrite)
-            f.close()
-        with open(f"{local_path}\\{world_name}.fwl", 'rb') as f:
-            self.dbx.files_upload(f.read(), f"/{world_name}.fwl", mode=dropbox.files.WriteMode.overwrite)
-            f.close()
-        self.toaster.show_toast("files uploaded!", " ", icon_path="valheim_sync.ico")
+    def download_save_files(self, local_path: str, world_name: str) -> bool:
+        """
+        Tries to download the world save files from the dropbox directory to the local directory.
 
-    def download_save_files(self, local_path: str, world_name: str) -> None:
+        :param local_path: The path of the local save file directory
+        :param world_name: The name of the desired world
+        :return: True if the download succeeded, False otherwise.
+        """
         try:
             with open("tmp.db", "wb+") as f:
                 metadata, res = self.dbx.files_download(f"/{world_name}.db")
@@ -37,7 +47,9 @@ class DBoxHandler:
                 f.close()
                 os.replace("tmp.fwl", f"{local_path}\\{world_name}.fwl")
             self.toaster.show_toast("files downloaded!", " ", icon_path="valheim_sync.ico")
+            return True
 
         except dropbox.exceptions.ApiError:
             self.toaster.show_toast("Error:", "No such file in Dropbox directory.", icon_path="valheim_sync.ico")
             self.upload_save_files(local_path, world_name)
+            return False
