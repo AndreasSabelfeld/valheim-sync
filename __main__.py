@@ -7,7 +7,7 @@ from time import sleep
 
 from src.dbox_handler import DBoxHandler
 from src.valheim_detector import ValheimDetector
-
+import src.dbg
 
 def main():
     print("running...")
